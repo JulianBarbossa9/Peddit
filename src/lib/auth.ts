@@ -1,10 +1,12 @@
-//logic of aothentication
+//logic of authentication
 
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, getServerSession } from "next-auth";
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { db } from "./db";
 import GoogleProvider from 'next-auth/providers/google'
-import {nanoid} from 'nonoid'
+import { nanoid } from 'nanoid'
+
+//With NestAuthOption we have the type 
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
