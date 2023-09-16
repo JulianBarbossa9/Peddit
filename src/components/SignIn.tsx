@@ -22,7 +22,7 @@ const SignIn: FC<SignInProps> = () => {
 
         <p className="px-8 text-center text-sm text-zinc-700">
           New to Peddit?{' '}
-          <Link href={'/'}
+          <Link href={'/sign-up'}
             className="hover:text-zinc-800 text-sm underline underline-offset-4"
           >
           Sign Up
