@@ -65,7 +65,7 @@ model Subpeddit {
   post      Post[]
 
   creatorId String?
-  Creator   User     @relation("CreatedBy", fields: [creatorId], references: [id])
+  Creator   User?     @relation("CreatedBy", fields: [creatorId], references: [id])
   subscribers Subscription[]
 
   @@index([name])
@@ -74,8 +74,10 @@ model Subpeddit {
 model Subscription {
   user User @relation(fields: [userId], references: [id])
   userId String
-  subpeddit Subpeddit  @relation("CreatedBy", fields: [subpedditId], references: [id])
+  subpeddit Subpeddit  @relation(fields: [subpedditId], references: [id])
   subpedditId String
+
+  @@id([userId,subpedditId])
 }
 
 model Post {
@@ -84,13 +86,14 @@ model Post {
   content     Json?
   createdAt   DateTime @default(now())
   updateAt    DateTime @updatedAt
-  subpeddit   Subpeddit @realation(fields: [subpeddit], references[id])
   subpedditId String
+  subpeddit   Subpeddit @relation(fields: [subpedditId], references: [id])
 
-  authorId String
   author   User   @relation(fields: [authorId], references: [id])
+  authorId String
 
   comments Comment[]
+  votes    Vote[]
 }
 
 model Comment {
