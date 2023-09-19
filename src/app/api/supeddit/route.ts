@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export async function POST(req: Request) {
   try {
-    //check if the user is loged
+    //check if the user is logged
     const session = await getAuthSession()
     if (!session?.user) {
       return new Response('Unauthorized' , { status: 401})
