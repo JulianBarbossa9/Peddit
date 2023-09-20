@@ -9,4 +9,4 @@ export const SubpedditSubscriptionValidator = z.object({
 })
 
 export type CreateSubpedditPayload = z.infer<typeof SubpedditValidator>
-export type SubcribeToSubpedditPayload = z.infer<typeof SubpedditValidator>
+export type SubcribeToSubpedditPayload = z.infer<typeof SubpedditSubscriptionValidator>
