@@ -1,13 +1,49 @@
-import { FC } from "react";
+import MiniCreatePost from "@/components/MiniCreatePost"
+import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
+import { getAuthSession } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { notFound } from "next/navigation"
 
 interface subpedditPageProps {
-  
+  params: {
+    slug: string
+  }
 }
  
-const subpedditPage: FC<subpedditPageProps> = () => {
+const subpedditPage = async ( { params }: subpedditPageProps) => {
+  const { slug } = params
+
+  const session = await getAuthSession()
+
+  const subpeddit = await db.subpeddit.findFirst({
+    where: {
+      name: slug,
+    },
+    include : {
+      //this is a JOIN
+      post: {
+        include: {
+          author: true,
+          votes: true,
+          comments: true,
+          subpeddit: true,
+        },
+
+        take: INFINITE_SCROLLING_PAGINATION_RESULTS
+      }
+    },
+  })
+
+  if (!subpeddit) return notFound()
+  
+  
   return (  
     <div>
-      subpedditPage
+      <h1 className="font-bold text-3xl md:text-4xl h-14">
+        p/{ subpeddit.name }
+      </h1>
+      <MiniCreatePost session={session}/>
+      {/* TODO: Show post in user feed */}
     </div>
   );
 }
