@@ -33,7 +33,7 @@ const SubmitPage = async ({ params } : SubmitPageProps) => {
 
       {/* form */}
 
-      <Editor />
+      <Editor subpedditId={subpeddit.id}/>
 
       <div className="w-full flex justify-end">
         <Button 
