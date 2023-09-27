@@ -1,16 +1,14 @@
-//This is wrapper component around al page content
+//This is wrapper component around all page content
 
 import SubscribeLeaveToogle from "@/components/SubscribeLeaveToogle";
+import { buttonVariants } from "@/components/ui/Button";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { format } from "date-fns";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FC } from "react";
 
-// interface LayoutProps {
-//   children: React.ReactNode
-//   params: { slug: string }
-// }
 
 const Layout = async ({
   children,
@@ -19,8 +17,8 @@ const Layout = async ({
   children: React.ReactNode;
   params: { slug: string };
 }) => {
+  
   const session = await getAuthSession();
-
   const subpeddit = await db.subpeddit.findFirst({
     where: { name: slug },
     include: {
@@ -33,7 +31,11 @@ const Layout = async ({
     },
   });
 
-  const subscription = session?.user
+  /**
+   * check if session no is null or undefined and sessiion.user exist this = false
+   * check if session is null or undefined = true
+   */
+  const subscription = !session?.user
     ? undefined
     : await db.subscription.findFirst({
         where: {
@@ -46,11 +48,12 @@ const Layout = async ({
         },
       });
 
+  // this value is used !! to convert a value into a boolean
   const isSubscribed = !!subscription;
 
   if (!subpeddit) return notFound();
 
-  //How many members
+  //How many members are
   const memberCount = db.subscription.count({
     where: {
       subpeddit: {
@@ -58,6 +61,7 @@ const Layout = async ({
       },
     },
   });
+
 
   return (
     <div className="sm:container max-w-7 mx-auto h-full pt-12">
@@ -93,12 +97,23 @@ const Layout = async ({
                 </div>
               ) : null}
 
-              {subpeddit.creatorId! == session?.user.id ? (
+              {subpeddit.creatorId !== session?.user.id ? (
                 <SubscribeLeaveToogle
                   subpedditName={subpeddit.name}
                   subpedditId={subpeddit.id}
+                  isSubscribed={isSubscribed}
                 />
               ) : null}
+
+              <Link
+                className={buttonVariants({
+                  variant: 'outline',
+                  className: 'w-full mb-6'
+                })}
+                href={`p/${slug}/submit`}
+              >
+                Create Post
+              </Link>
             </dl>
           </div>
         </div>
