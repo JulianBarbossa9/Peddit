@@ -60,12 +60,12 @@ const PostFeed: FC<PostFeedProps> = ({ initialPost, subpedditName }) => {
               key={ post.id}
               ref={ref}
             >
-              <Post />
+              <Post commentAmt={post.comments.length} post={post} subpedditName={post.subpeddit.name}/>
             </li>
           )
         }
         else {
-          return <Post />
+          return <Post commentAmt={post.comments.length} post={post} subpedditName={post.subpeddit.name}/>
         }
       })
     }
