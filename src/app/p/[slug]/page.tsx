@@ -1,4 +1,5 @@
 import MiniCreatePost from "@/components/MiniCreatePost"
+import PostFeed from "@/components/PostFeed"
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
 import { getAuthSession } from "@/lib/auth"
 import { db } from "@/lib/db"
@@ -43,7 +44,7 @@ const subpedditPage = async ( { params }: subpedditPageProps) => {
         p/{ subpeddit.name }
       </h1>
       <MiniCreatePost session={session}/>
-      {/* TODO: Show post in user feed */}
+      <PostFeed subpedditName={subpeddit.name} initialPost={subpeddit.post}/>
     </div>
   );
 }
