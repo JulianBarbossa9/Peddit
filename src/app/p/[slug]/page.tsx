@@ -30,7 +30,8 @@ const subpedditPage = async ( { params }: subpedditPageProps) => {
           subpeddit: true,
         },
 
-        take: INFINITE_SCROLLING_PAGINATION_RESULTS
+        // take: INFINITE_SCROLLING_PAGINATION_RESULTS
+        take: 9
       }
     },
   })
