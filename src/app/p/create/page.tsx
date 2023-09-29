@@ -22,7 +22,6 @@ const Page = () => {
       }
 
       const { data } = await axios.post('/api/supeddit', payload)
-      console.log(data)
       return data as string
     },
     // Error handling
