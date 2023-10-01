@@ -21,55 +21,71 @@ const PostFeed: FC<PostFeedProps> = ({ initialPost, subpedditName }) => {
     threshold: 1,
   });
 
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   //Query to make a request to our API endopoint
-  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(["infinite-query"], async ({ pageParam = 1 }) => {
-    const query =
-      `/api/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=${pageParam}` +
-      (!!subpedditName ? `&subpeddit=${subpedditName}` : "");
+  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
+    ["infinite-query"],
+    async ({ pageParam = 1 }) => {
+      const query =
+        `/api/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=${pageParam}` +
+        (!!subpedditName ? `&subpeddit=${subpedditName}` : "");
 
-      const { data } = await axios.get(query)
-      return data as ExtendedPost[]
-  },{
-    getNextPageParam: (_, pages) => {
-      return pages.length + 1
+      const { data } = await axios.get(query);
+      return data as ExtendedPost[];
     },
-    initialData: { 
-      pages: [initialPost],
-      pageParams: [1]
-    }
-  });
-
-  const posts = data?.pages.flatMap((page) => page) ?? initialPost
-
-  return <ul className="flex flex-col col-span-2 space-y-6">
     {
-      posts.map((post, index) => {
-        const totalVotes = post.votes.reduce((accurate, vote) => {
-          if (vote.type === 'UP') return accurate + 1
-          if (vote.type === 'DOWN') return accurate - 1
-          return accurate
-        }, 0)
-
-        const currentVote = post.votes.find((vote) => vote.userId == session?.user.id)
-        
-        if (index === posts.length - 1) {
-          return(
-            <li 
-              key={ post.id}
-              ref={ref}
-            >
-              <Post commentAmt={post.comments.length} post={post} subpedditName={post.subpeddit.name}/>
-            </li>
-          )
-        }
-        else {
-          return <Post commentAmt={post.comments.length} post={post} subpedditName={post.subpeddit.name}/>
-        }
-      })
+      getNextPageParam: (_, pages) => {
+        return pages.length + 1;
+      },
+      initialData: {
+        pages: [initialPost],
+        pageParams: [1],
+      },
     }
-  </ul>;
+  );
+
+  const posts = data?.pages.flatMap((page) => page) ?? initialPost;
+
+  return (
+    <ul className="flex flex-col col-span-2 space-y-6">
+      {posts.map((post, index) => {
+        const totalVotes = post.votes.reduce((accurate, vote) => {
+          if (vote.type === "UP") return accurate + 1;
+          if (vote.type === "DOWN") return accurate - 1;
+          return accurate;
+        }, 0);
+
+        const currentVote = post.votes.find(
+          (vote) => vote.userId == session?.user.id
+        );
+
+        if (index === posts.length - 1) {
+          return (
+            <li key={post.id} ref={ref}>
+              <Post
+                commentAmt={post.comments.length}
+                post={post}
+                subpedditName={post.subpeddit.name}
+                votesAmt={totalVotes}
+                currentVote={currentVote}
+              />
+            </li>
+          );
+        } else {
+          return (
+            <Post
+              commentAmt={post.comments.length}
+              post={post}
+              subpedditName={post.subpeddit.name}
+              votesAmt={totalVotes}
+              currentVote={currentVote}
+            />
+          );
+        }
+      })}
+    </ul>
+  );
 };
 
 export default PostFeed;
