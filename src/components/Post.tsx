@@ -4,6 +4,9 @@ import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { FC, useRef } from "react";
 import EditorOutput from "./EditorOutput";
+import PostVoteClient from "./post-vote/PostVoteClient";
+
+type PartialVote = Pick<Vote, "type">;
 
 interface PostProps {
   subpedditName: string;
@@ -11,16 +14,28 @@ interface PostProps {
     author: User;
     votes: Vote[];
   };
-  commentAmt: number
+  commentAmt: number;
+  votesAmt: number;
+  currentVote?: PartialVote;
 }
 
-const Post: FC<PostProps> = ({ subpedditName, post, commentAmt }) => {
+const Post: FC<PostProps> = ({
+  subpedditName,
+  post,
+  commentAmt,
+  votesAmt,
+  currentVote,
+}) => {
   const pRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="mt-4 rounded-md bg-white shadow">
       <div className="px-6 py-4 flex justify-between">
-        {/* TODO: PostVotes  */}
+        <PostVoteClient
+          initialVotesAmt={votesAmt}
+          postId={post.id}
+          initialVote={currentVote?.type}
+        />
         <div className="w-0 flex-1">
           <div className="max-h-40 mt-1 text-gray-500">
             {subpedditName ? (
@@ -49,9 +64,9 @@ const Post: FC<PostProps> = ({ subpedditName, post, commentAmt }) => {
 
           <div
             className="relative text-sm max-h-40 w-full overflow-clip"
-            ref={pRef}>
-
-            <EditorOutput content={post.content} /> 
+            ref={pRef}
+          >
+            <EditorOutput content={post.content} />
             {pRef.current?.clientHeight === 160 ? (
               <div className="absolute bottom-0 left-0 h-24 w-full bg-gradiant-to-t from-white to-transparent" />
             ) : null}
@@ -64,7 +79,7 @@ const Post: FC<PostProps> = ({ subpedditName, post, commentAmt }) => {
           className="w-fit flex items-center gap-2"
           href={`/p/${subpedditName}/post/${post.id}`}
         >
-          <MessageSquare className="h-4 w-4" /> { commentAmt } comments
+          <MessageSquare className="h-4 w-4" /> {commentAmt} comments
         </a>
       </div>
     </div>
