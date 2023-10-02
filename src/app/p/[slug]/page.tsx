@@ -29,7 +29,10 @@ const subpedditPage = async ( { params }: subpedditPageProps) => {
           comments: true,
           subpeddit: true,
         },
-
+        orderBy: {
+          createdAt: 'desc'
+        },
+        
         take: INFINITE_SCROLLING_PAGINATION_RESULTS
         // take: 9
       }
