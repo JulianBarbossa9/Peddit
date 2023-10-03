@@ -42,6 +42,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPost, subpedditName }) => {
         pages: [initialPost],
         pageParams: [1],
       },
+      
     }
   );
 
